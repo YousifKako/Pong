@@ -27,10 +27,6 @@ public:
             std::cerr << "SDL_Net was unable to be initialized ERR: " << SDLNet_GetError() << std::endl;
             throw EXIT_FAILURE;
         }
-
-        //SDLNet_ResolveHost(&this->ip, NULL, port);
-
-        //this->server = SDLNet_UDP_Open(ip.host);
     }
 
     ~Server()

@@ -1,8 +1,8 @@
-# Pong C++
+# Pong
 This Game is in **Alpha**.
-
 Pong is written in C++ using SDL and SDLNet.
 
 ## Dependences
-- SDL
-- SDLNet
+- SDL2
+- SDL2_Net
+- SDL2_Image
