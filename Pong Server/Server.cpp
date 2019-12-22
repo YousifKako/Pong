@@ -1,43 +1,69 @@
 #include <iostream>
 
-#include <SDL.h>
-#include <SDL_net.h>
+#include <boost/asio.hpp>
+#include <boost/filesystem.hpp>
 
-
-const int port = 8231;
-
+using namespace boost::asio;
+using namespace boost::asio::ip;
 
 class Server
 {
 private:
-    IPaddress ip = { };
-    UDPsocket server = nullptr;
+    const uint16_t port = 8888;
+    const std::string ip = "localhost";
+
+    std::vector<tcp::socket*> SocketList;
 
 public:
     Server()
     {
-        if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+        try
         {
-            std::cerr << "SDL was unable to be initialized ERR: " << SDL_GetError() << std::endl;
-            throw EXIT_FAILURE;
-        }
+            for (uint16_t i = 0; i < 2; ++i)
+            {
+                io_service io_service;
 
-        if (SDLNet_Init() < 0)
+                /* Initialize to Accept a TCP connection on PORT */
+                tcp::acceptor AcceptConnection(io_service, tcp::endpoint(tcp::v6(), this->port));
+
+                /* Socket Creation */
+                tcp::socket Socket(io_service);
+
+                std::cout << "Waiting for Player " << i+1 << std::endl;
+
+                /* Listen for Connections */
+                AcceptConnection.accept(Socket);
+
+                std::cout << "Connection Established: "
+                    << Socket.remote_endpoint() << std::endl;
+
+                /* Add the Connection to SocketList */
+                this->SocketList.push_back(&Socket);
+
+                std::string ret = "Hello";
+                boost::asio::write(*this->SocketList.at(i), boost::asio::buffer(ret.data(), 6));
+
+            }
+        }
+        catch (std::exception& e)
         {
-            std::cerr << "SDL_Net was unable to be initialized ERR: " << SDLNet_GetError() << std::endl;
-            throw EXIT_FAILURE;
+            std::cerr << e.what() << std::endl;
         }
     }
 
     ~Server()
     {
-        SDLNet_Quit();
-        SDL_Quit();
+
+    }
+
+    void handleData()
+    {
+
     }
 };
 
 int main(int argc, char* argv[])
 {
-    Server();
+    Server* server = new Server();
     return EXIT_SUCCESS;
 }

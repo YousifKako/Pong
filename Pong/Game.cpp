@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include <SDL.h>
-#include <SDL_net.h>
 
 #include "Game.hpp"
 #include "TextureManager.hpp"
@@ -39,6 +38,7 @@ Game::Game(const uint16_t width, const uint16_t height) : width(width), height(h
     this->isRunning = true;
 
     /* Create Game Objects */
+    this->connectToPlayer();
     this->loadBall();
     this->loadPlayers();
 
@@ -55,9 +55,14 @@ Game::~Game()
     SDL_DestroyWindow(this->window);
     SDL_DestroyRenderer(this->renderer);
     SDL_Quit();
-    //SDLNet_Quit();
+    this->Client_player2->~Client();
 
     std::cerr << "Exiting..." << std::endl;
+}
+
+void Game::connectToPlayer()
+{
+    this->Client_player2 = new Client();
 }
 
 void Game::loadBall()
@@ -73,13 +78,13 @@ void Game::loadPlayers()
     this->player1 = new Player("../Assets/Pong_Stick.png",
         this->renderer,
         13, 7, 3, 18,
-        20
+        this->width - 30
     );
 
     this->player2 = new Player("../Assets/Pong_Stick.png",
         this->renderer,
         13, 7, 3, 18,
-        this->width - 30
+        20
     );
 }
 
