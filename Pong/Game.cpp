@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 
 #include <SDL.h>
 
@@ -38,9 +39,9 @@ Game::Game(const uint16_t width, const uint16_t height) : width(width), height(h
     this->isRunning = true;
 
     /* Create Game Objects */
-    this->connectToPlayer();
     this->loadBall();
     this->loadPlayers();
+    this->connectToPlayer();
 
     if ((this->player1 && this->player2 && this->ball) == false)
     {
@@ -55,14 +56,14 @@ Game::~Game()
     SDL_DestroyWindow(this->window);
     SDL_DestroyRenderer(this->renderer);
     SDL_Quit();
-    this->Client_player2->~Client();
+    //this->server->~Client();
 
     std::cerr << "Exiting..." << std::endl;
 }
 
 void Game::connectToPlayer()
 {
-    this->Client_player2 = new Client();
+    this->server = new Client(&player1->y, &player2->y);
 }
 
 void Game::loadBall()

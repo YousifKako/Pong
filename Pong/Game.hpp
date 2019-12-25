@@ -22,7 +22,7 @@ private:
     Player* player1 = nullptr;
     Player* player2 = nullptr;
 
-    Client* Client_player2 = nullptr;
+    Client* server = nullptr;
 
     const uint16_t width = 0;
     const uint16_t height = 0;
